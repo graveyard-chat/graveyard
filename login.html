@@ -106,58 +106,65 @@
     </div>
   </div>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    const supabase = createClient(
-      'https://sqrdqbgwkbopuyjfzysq.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxcmRxYmd3a2JvcHV5amZ6eXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzEyNTAsImV4cCI6MjA2NzIwNzI1MH0.uuOI4DGGx9jhsnrD2nJmKAr95UQKZGl0QXsxTxgiaOc'
-    );
+  const supabase = createClient(
+    'https://sqrdqbgwkbopuyjfzysq.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxcmRxYmd3a2JvcHV5amZ6eXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzEyNTAsImV4cCI6MjA2NzIwNzI1MH0.uuOI4DGGx9jhsnrD2nJmKAr95UQKZGl0QXsxTxgiaOc'
+  );
 
-    const loginBtn = document.getElementById('login-btn');
-    const messageBox = document.getElementById('message');
+  const loginBtn = document.getElementById('login-btn');
+  const messageBox = document.getElementById('message');
 
-    loginBtn.addEventListener('click', async () => {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
+  // Horror sound setup
+  const doorSound = new Audio('sounds/door-creak.mp3'); // adjust path if needed
 
-      messageBox.textContent = '';
-      messageBox.className = 'message';
+  loginBtn.addEventListener('click', async () => {
+    // Play the horror door sound
+    doorSound.currentTime = 0;
+    doorSound.play();
 
-      if (!email || !password) {
-        messageBox.textContent = 'Both fields are required.';
-        messageBox.classList.add('error');
-        return;
-      }
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-      if (!email.includes('@')) {
-        messageBox.textContent = 'Please enter a valid email.';
-        messageBox.classList.add('error');
-        return;
-      }
+    messageBox.textContent = '';
+    messageBox.className = 'message';
 
-      loginBtn.disabled = true;
-      loginBtn.textContent = 'Entering...';
+    if (!email || !password) {
+      messageBox.textContent = 'Both fields are required.';
+      messageBox.classList.add('error');
+      return;
+    }
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    if (!email.includes('@')) {
+      messageBox.textContent = 'Please enter a valid email.';
+      messageBox.classList.add('error');
+      return;
+    }
 
-      if (error) {
-        messageBox.textContent = error.message || 'Login failed.';
-        messageBox.classList.add('error');
-      } else {
-        messageBox.textContent = 'Login successful.';
-        messageBox.classList.add('success');
-        setTimeout(() => {
-          window.location.href = 'home.html';
-        }, 1000);
-      }
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Entering...';
 
-      loginBtn.disabled = false;
-      loginBtn.textContent = 'Enter Grave';
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
-  </script>
+
+    if (error) {
+      messageBox.textContent = error.message || 'Login failed.';
+      messageBox.classList.add('error');
+    } else {
+      messageBox.textContent = 'Login successful.';
+      messageBox.classList.add('success');
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 1000);
+    }
+
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Enter Grave';
+  });
+</script>
 </body>
 </html>
