@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <title>Signup • GRAVE-YARD</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Favicons -->
+  <link href="favi/favicon.ico" rel="icon">
+  <link href="favi/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="favi/android-chrome-512x512.png" rel="android-chrome-512x512">
+  <link href="favi/android-chrome-192x192.png" rel="android-chrome-192x192">
+
+
   <style>
     body {
       background-color: #0a0a0a;
@@ -107,74 +115,66 @@
     </div>
   </div>
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabase = createClient(
-    'https://sqrdqbgwkbopuyjfzysq.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxcmRxYmd3a2JvcHV5amZ6eXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzEyNTAsImV4cCI6MjA2NzIwNzI1MH0.uuOI4DGGx9jhsnrD2nJmKAr95UQKZGl0QXsxTxgiaOc'
-  );
+    const supabase = createClient(
+      'https://sqrdqbgwkbopuyjfzysq.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxcmRxYmd3a2JvcHV5amZ6eXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzEyNTAsImV4cCI6MjA2NzIwNzI1MH0.uuOI4DGGx9jhsnrD2nJmKAr95UQKZGl0QXsxTxgiaOc'
+    );
 
-  // Preload the horror door sound
-  const doorSound = new Audio('sounds/door-creak.mp3'); // adjust path if needed
+    window.signup = async function () {
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const message = document.getElementById('message');
 
-  window.signup = async function () {
-    // 🔊 Play sound
-    doorSound.currentTime = 0;
-    doorSound.play();
+      message.textContent = '';
+      message.className = 'message';
 
-    const username = document.getElementById('username').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const message = document.getElementById('message');
-
-    message.textContent = '';
-    message.className = 'message';
-
-    if (!username || !email || !password) {
-      message.textContent = 'All fields are required.';
-      message.classList.add('error');
-      return;
-    }
-
-    // 1. Sign up with Supabase Auth
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    });
-
-    if (error || !data?.user) {
-      message.textContent = error?.message || 'Signup failed.';
-      message.classList.add('error');
-      return;
-    }
-
-    const user_id = data.user.id;
-
-    // 2. Store user profile + plaintext password in `profiles` table
-    const { error: profileError } = await supabase.from('profiles').insert([
-      {
-        id: user_id,
-        username: username,
-        email: email,
-        password: password 
+      if (!username || !email || !password) {
+        message.textContent = 'All fields are required.';
+        message.classList.add('error');
+        return;
       }
-    ]);
 
-    if (profileError) {
-      message.textContent = 'Signup succeeded but profile failed.';
-      message.classList.add('error');
-      return;
-    }
+      // 1. Sign up with Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
 
-    message.textContent = 'Welcome to the GRAVE-YARD.';
-    message.classList.add('success');
+      if (error || !data?.user) {
+        message.textContent = error?.message || 'Signup failed.';
+        message.classList.add('error');
+        return;
+      }
 
-    setTimeout(() => {
-      window.location.href = 'login.html';
-    }, 5000);
-  };
-</script>
+      const user_id = data.user.id;
 
+      // 2. Store user profile + plaintext password in `profiles` table
+      const { error: profileError } = await supabase.from('profiles').insert([
+        {
+          id: user_id,
+          username: username,
+          email: email,
+          password: password // ⚠️ Plaintext password
+        }
+      ]);
+
+      if (profileError) {
+        message.textContent = 'Signup succeeded but profile failed.';
+        message.classList.add('error');
+        return;
+      }
+
+      message.textContent = 'Welcome to the GRAVE-YARD.';
+      message.classList.add('success');
+
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1000);
+    };
+  </script>
 </body>
 </html>
