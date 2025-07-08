@@ -167,8 +167,9 @@
   <div id="profile" class="tab-content">
     <div class="profile-info" id="profile-info">Loading profile...</div>
     <br />
+    <button onclick="goToPasswordChange()" style="background-color: orange; color: black;">Go to Change Password</button><br/><br/>
     <button onclick="toggleDarkMode()" id="darkmode-btn">Toggle Dark Mode</button>
-    <br /><br />
+    <br/><br/>
     <button onclick="logout()" style="background-color: red; color: white;">Log Out</button>
   </div>
 
@@ -349,6 +350,11 @@
   window.logout = async function () {
     await supabase.auth.signOut();
     location.href = "login.html";
+  };
+
+  window.goToPasswordChange = function () 
+  {
+    window.location.href = "change-password.html";
   };
 
   window.toggleDarkMode = function () {
