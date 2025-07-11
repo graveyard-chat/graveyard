@@ -256,26 +256,26 @@
     window.location.href = "home.html";
   }
 
-  supabase
-    .channel('private_messages')
-    .on('postgres_changes', {
-      event: 'INSERT',
-      schema: 'public',
-      table: 'private_messages'
-    }, payload => {
-      const msg = payload.new;
-      if (
-        (msg.sender_id === me && msg.receiver_id === you) ||
-        (msg.sender_id === you && msg.receiver_id === me)
-      ) {
-        renderMessage(msg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-    })
-    .subscribe();
+    // Real-time updates
+    supabase
+      .channel('private_messages')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'private_messages'
+      }, payload => {
+        const msg = payload.new;
+        if (
+          (msg.sender_id === me && msg.receiver_id === you) ||
+          (msg.sender_id === you && msg.receiver_id === me)
+        ) {
+          renderMessage(msg);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      })
+      .subscribe();
 
-  loadMessages();
+    loadMessages();
 </script>
-
 </body>
 </html>
