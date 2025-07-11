@@ -11,12 +11,14 @@
   <link href="favi/android-chrome-512x512.png" rel="android-chrome-512x512">
   <link href="favi/android-chrome-192x192.png" rel="android-chrome-192x192">
 
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <style>
     body {
       background-color: #0a0a0a;
       color: #e0e0e0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Share Tech Mono', monospace;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -26,49 +28,72 @@
 
     .login-container {
       background-color: #131313;
-      border: 1px solid #333;
-      padding: 40px;
-      border-radius: 8px;
-      width: 350px;
-      box-shadow: 0 0 10px #00ffcc33;
+      border: 2px solid #00ffcc66;
+      padding: 40px 30px;
+      border-radius: 10px;
+      width: 340px;
       text-align: center;
+      box-shadow: 0 0 15px #00ffcc44, 0 0 30px #00ffcc22 inset;
     }
 
     h2 {
-      margin-bottom: 20px;
+      font-family: 'Cinzel Decorative', cursive;
       color: #00ffcc;
+      margin-bottom: 30px;
+      font-size: 28px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+
+    .input-group {
+      position: relative;
+      width: 85%;
+      margin: 12px auto;
     }
 
     input {
-      width: 80%;
+      width: 100%;
       padding: 12px;
-      margin: 10px 0;
-      background-color: #1e1e1e;
+      background-color: #1b1b1b;
       border: 1px solid #444;
-      border-radius: 5px;
-      color: #fff;
+      border-radius: 6px;
+      color: #00ffcc;
       font-size: 15px;
+      outline: none;
+      box-shadow: 0 0 5px #00ffcc22 inset;
     }
 
     input::placeholder {
       color: #888;
     }
 
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888;
+      font-size: 18px;
+    }
+
     button {
-      width: 50%;
+      width: 60%;
       padding: 12px;
-      margin-top: 20px;
+      margin-top: 25px;
       background-color: #00ffcc;
       color: #000;
       font-weight: bold;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      border-radius: 6px;
       font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
     }
 
     button:hover {
-      background-color: #00ddb5;
+      background-color: #00e6b8;
+      transform: scale(1.04);
     }
 
     .message {
@@ -85,9 +110,9 @@
     }
 
     .footer {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #666;
+      margin-top: 25px;
+      font-size: 13px;
+      color: #888;
     }
 
     .footer a {
@@ -98,81 +123,147 @@
     .footer a:hover {
       text-decoration: underline;
     }
+
+    @media (max-width: 400px) {
+      .login-container {
+        width: 90%;
+        padding: 30px 20px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+
+    @keyframes glitch-flicker {
+      0%, 100% {
+        transform: translate(0);
+        color: #888;
+      }
+      25% {
+        transform: translate(1px, -1px);
+        color: #00ffcc;
+      }
+      50% {
+        transform: translate(-1px, 2px);
+        color: #ff0040;
+      }
+      75% {
+        transform: translate(2px, -2px);
+        color: #00ffcc;
+      }
+    }
+
+    .toggle-password.glitch {
+      animation: glitch-flicker 0.4s ease-in-out;
+    }
+
+
   </style>
 </head>
 <body>
 
   <div class="login-container">
     <h2>GRAVE-YARD</h2>
-    <input type="text" id="email" placeholder="Enter your email" />
-    <input type="password" id="password" placeholder="Enter your password" />
+    <div class="input-group">
+      <input type="text" id="email" placeholder="Enter your email" />
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Enter your password" />
+      <span class="toggle-password" onclick="togglePassword()">👁️</span>
+    </div>
+
     <button id="login-btn">Enter Grave</button>
     <div id="message" class="message"></div>
 
     <div class="footer">
-      Don’t have an account? <a href="index.html">Join the Cult</a><br />
+      Don’t have an account? <a href="index.html">Join the Cult</a>
     </div>
   </div>
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabase = createClient(
-    'https://sqrdqbgwkbopuyjfzysq.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxcmRxYmd3a2JvcHV5amZ6eXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzEyNTAsImV4cCI6MjA2NzIwNzI1MH0.uuOI4DGGx9jhsnrD2nJmKAr95UQKZGl0QXsxTxgiaOc'
-  );
+    const supabase = createClient(
+      'https://sqrdqbgwkbopuyjfzysq.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNxcmRxYmd3a2JvcHV5amZ6eXNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2MzEyNTAsImV4cCI6MjA2NzIwNzI1MH0.uuOI4DGGx9jhsnrD2nJmKAr95UQKZGl0QXsxTxgiaOc'
+    );
 
-  const loginBtn = document.getElementById('login-btn');
-  const messageBox = document.getElementById('message');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('login-btn');
+    const messageBox = document.getElementById('message');
+    const doorSound = new Audio('sounds/door-creak.mp3'); // Ensure this exists
 
-  // Horror sound setup
-  const doorSound = new Audio('sounds/door-creak.mp3'); // adjust path if needed
+    async function login() {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
 
-  loginBtn.addEventListener('click', async () => {
-    // Play the horror door sound
-    doorSound.currentTime = 0;
-    doorSound.play();
+      messageBox.textContent = '';
+      messageBox.className = 'message';
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
+      if (!email || !password) {
+        messageBox.textContent = 'Both fields are required.';
+        messageBox.classList.add('error');
+        return;
+      }
 
-    messageBox.textContent = '';
-    messageBox.className = 'message';
+      if (!email.includes('@')) {
+        messageBox.textContent = 'Please enter a valid email.';
+        messageBox.classList.add('error');
+        return;
+      }
 
-    if (!email || !password) {
-      messageBox.textContent = 'Both fields are required.';
-      messageBox.classList.add('error');
-      return;
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Entering...';
+
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        messageBox.textContent = error.message || 'Login failed.';
+        messageBox.classList.add('error');
+      } else {
+        doorSound.currentTime = 0;
+        doorSound.play();
+        messageBox.textContent = 'Login successful.';
+        messageBox.classList.add('success');
+        setTimeout(() => {
+          window.location.href = 'home.html';
+        }, 5000);
+      }
+
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Enter Grave';
     }
 
-    if (!email.includes('@')) {
-      messageBox.textContent = 'Please enter a valid email.';
-      messageBox.classList.add('error');
-      return;
-    }
+    loginBtn.addEventListener('click', login);
 
-    loginBtn.disabled = true;
-    loginBtn.textContent = 'Entering...';
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    // Press Enter to login
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        login();
+      }
     });
 
-    if (error) {
-      messageBox.textContent = error.message || 'Login failed.';
-      messageBox.classList.add('error');
-    } else {
-      messageBox.textContent = 'Login successful.';
-      messageBox.classList.add('success');
-      setTimeout(() => {
-        window.location.href = 'home.html';
-      }, 5000);
-    }
+    // Toggle Password visibility
+    window.togglePassword = function () {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
 
-    loginBtn.disabled = false;
-    loginBtn.textContent = 'Enter Grave';
-  });
-</script>
+      const eye = document.querySelector('.toggle-password');
+      eye.classList.add('glitch');
+
+      setTimeout(() => {
+      eye.classList.remove('glitch');
+      }, 400);
+    };
+
+  </script>
+
 </body>
 </html>
